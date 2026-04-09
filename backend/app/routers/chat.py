@@ -1,3 +1,4 @@
+import os
 import time
 
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -48,7 +49,7 @@ async def chat(request: Request, body: ChatRequest, chain: Runnable = Depends(ge
 
     sources = [
         SourceDocument(
-            source_file=doc.metadata.get("source", "unknown"),
+            source_file=os.path.basename(doc.metadata.get("source", "unknown")),
             # PyPDFLoader uses 0-based page numbers; add 1 for human-readable display.
             page_number=doc.metadata.get("page") + 1 if doc.metadata.get("page") is not None else None,
             excerpt=doc.page_content[:200],
