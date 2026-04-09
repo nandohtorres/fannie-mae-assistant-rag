@@ -8,8 +8,8 @@ WORKDIR /app
 # Install C/C++ build tools required by chroma-hnswlib (a native extension).
 # python:3.12-slim ships without gcc/g++ so we add them explicitly.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
-    g++ \
+    build-essential \
+    cmake \
     && rm -rf /var/lib/apt/lists/*
 
 # Install dependencies before copying source code so Docker can cache this layer.
