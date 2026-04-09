@@ -1,0 +1,28 @@
+# Web framework
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+python-dotenv==1.0.1
+
+# Data validation and settings
+pydantic==2.8.2
+pydantic-settings==2.4.0
+
+# LangChain ecosystem — each integration has its own package
+langchain==0.3.0
+langchain-core==0.3.0
+langchain-openai==0.2.0
+langchain-community==0.3.0
+langchain-chroma==0.1.4
+langchain-text-splitters==0.3.0
+
+# Vector database
+chromadb==0.5.3
+
+# PDF ingestion
+pypdf==4.3.1
+
+# Token counting — useful for chunk size tuning and cost estimation
+tiktoken==0.7.0
+
+# Rate limiting — prevents abuse on the /api/chat endpoint
+slowapi==0.1.9

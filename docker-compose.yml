@@ -1,0 +1,27 @@
+services:
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      # Persist the Chroma vector database between container restarts.
+      # Without this volume, the database is lost every time the container rebuilds.
+      - ./backend/chroma_db:/app/chroma_db
+      # PDFs must be present in this folder before running the ingest service.
+      - ./backend/data:/app/data
+      # SQLite query log persists between restarts.
+      - ./backend/logs:/app/logs
+    env_file:
+      - ./backend/.env
+
+  # One-shot ingest service — run this once to populate the vector database.
+  # Usage: docker compose run --rm ingest
+  ingest:
+    build: ./backend
+    command: python ingest.py
+    volumes:
+      - ./backend/chroma_db:/app/chroma_db
+      - ./backend/data:/app/data
+    env_file:
+      - ./backend/.env

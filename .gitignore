@@ -1,0 +1,43 @@
+# Environment variables — never commit secrets
+**/.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# Chroma vector database — rebuilt from PDFs via ingest.py
+backend/chroma_db/
+
+# Query logs — runtime artifact, not source code
+backend/logs/
+
+# PDFs — too large for git, added manually per deployment
+backend/data/pdfs/
+
+# Frontend
+node_modules/
+frontend/dist/
+frontend/build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Internal AI working notes — not part of the public project
+AiFeedback/
+CLAUDE.md
+
+# SQLite databases (if generated outside logs/)
+*.db
