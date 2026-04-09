@@ -44,6 +44,11 @@ async def chat(request: Request, body: ChatRequest, chain: Runnable = Depends(ge
             status_code=502,
             detail="Upstream AI service error. Please try again.",
         ) from error
+    except Exception as error:
+        raise HTTPException(
+            status_code=500,
+            detail="Internal error. Please try again.",
+        ) from error
 
     latency_ms = int((time.monotonic() - start_time) * 1000)
 
