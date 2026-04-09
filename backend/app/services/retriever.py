@@ -14,7 +14,7 @@ TOP_K_RESULTS = 6
 MMR_FETCH_K = 20
 
 
-def build_retriever() -> tuple[BaseRetriever, int]:
+def build_retriever() -> tuple[BaseRetriever | None, int]:
     """
     Loads the persisted Chroma vector store from disk and returns a retriever
     along with the count of indexed document chunks.
@@ -42,10 +42,7 @@ def build_retriever() -> tuple[BaseRetriever, int]:
 
     stored_ids = vector_store.get()["ids"]
     if not stored_ids:
-        raise RuntimeError(
-            "Chroma vector store is empty. "
-            "Run 'python ingest.py' before starting the server."
-        )
+        return None, 0
 
     document_count = len(stored_ids)
 

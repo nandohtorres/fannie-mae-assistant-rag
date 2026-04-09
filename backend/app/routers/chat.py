@@ -20,7 +20,10 @@ def get_rag_chain() -> Runnable:
     Raises HTTP 503 if the chain has not loaded yet.
     """
     if app_state.rag_chain is None:
-        raise HTTPException(status_code=503, detail="RAG chain is not ready yet")
+        raise HTTPException(
+            status_code=503,
+            detail="The knowledge base is still loading. Please try again in a few minutes.",
+        )
     return app_state.rag_chain
 
 

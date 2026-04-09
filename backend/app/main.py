@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from contextlib import asynccontextmanager
 
@@ -16,31 +17,48 @@ import app.state as app_state
 
 logger = logging.getLogger(__name__)
 
+INGEST_POLL_INTERVAL_SECONDS = 30
+
+
+async def _poll_until_ready():
+    """
+    Background task that retries building the RAG chain every 30 seconds
+    until the ingest pipeline finishes writing to the Chroma volume.
+    """
+    while True:
+        await asyncio.sleep(INGEST_POLL_INTERVAL_SECONDS)
+        try:
+            retriever, document_count = build_retriever()
+            if retriever is not None:
+                app_state.rag_chain = build_rag_chain(retriever)
+                app_state.document_count = document_count
+                logger.info("RAG chain ready. %d document chunks indexed.", document_count)
+                return
+            logger.info("Ingest still running — will retry in %ds.", INGEST_POLL_INTERVAL_SECONDS)
+        except Exception:
+            logger.exception("Error while polling for Chroma readiness.")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """
-    Runs once when the server starts, and once when it shuts down.
-    Startup: initializes the SQLite log, builds the retriever, builds the RAG chain.
-    Shutdown: nothing to clean up for now.
+    Runs once when the server starts and once when it shuts down.
+    If the Chroma DB is already populated (volume has data), builds the RAG chain immediately.
+    If empty (ingest is running in the background via start.sh), starts polling until ready.
     """
-    # Set up the query log database (creates the table if it doesn't exist)
     initialize_database()
 
-    # Load the persisted Chroma vector store and build the retriever
     retriever, document_count = build_retriever()
 
-    # Store the document count for the /health endpoint
-    app_state.document_count = document_count
+    if retriever is not None:
+        app_state.rag_chain = build_rag_chain(retriever)
+        app_state.document_count = document_count
+        logger.info("RAG chain ready. %d document chunks indexed.", document_count)
+    else:
+        logger.info("Chroma DB is empty — ingest is running in background. Polling every %ds.", INGEST_POLL_INTERVAL_SECONDS)
+        asyncio.create_task(_poll_until_ready())
 
-    # Build the full RAG chain and store it in shared state
-    app_state.rag_chain = build_rag_chain(retriever)
-
-    logger.info("RAG chain ready. %d document chunks indexed.", app_state.document_count)
-
-    yield  # Server runs here
-
-    # Cleanup on shutdown (nothing required for Chroma local)
+    yield
 
 
 app = FastAPI(
@@ -64,12 +82,3 @@ app.add_middleware(
 )
 
 app.include_router(chat.router)
-
-
-@app.get("/api/health")
-def health_check():
-    """
-    Returns server status and the number of indexed document chunks.
-    Used by Railway as a health check probe to confirm the server is ready.
-    """
-    return {"status": "ok", "documents_indexed": app_state.document_count}
