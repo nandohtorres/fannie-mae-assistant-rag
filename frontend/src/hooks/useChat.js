@@ -33,7 +33,12 @@ export function useChat() {
       });
 
       if (!response.ok) {
-        throw new Error(`Server returned ${response.status}`);
+        setErrorMessage(
+          response.status === 503
+            ? "The assistant is still loading. Please try again in a moment."
+            : "Something went wrong. Please try again."
+        );
+        return;
       }
 
       const data = await response.json();
