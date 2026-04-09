@@ -64,3 +64,12 @@ app.add_middleware(
 )
 
 app.include_router(chat.router)
+
+
+@app.get("/api/health")
+def health_check():
+    """
+    Returns server status and the number of indexed document chunks.
+    Used by Railway as a health check probe to confirm the server is ready.
+    """
+    return {"status": "ok", "documents_indexed": app_state.document_count}
