@@ -20,9 +20,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application source
 COPY . .
 
+# Make the startup script executable
+RUN chmod +x start.sh
+
 # The server runs on port 8000
 EXPOSE 8000
 
-# Ingest is run separately as a one-shot step before starting the server.
-# See docker-compose.yml for the ingest service definition.
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# start.sh checks if the Chroma DB is already populated (volume data persists
+# across redeploys on Railway). If empty, it runs ingest first, then starts
+# the server. This means ingest only runs once on a fresh volume.
+CMD ["bash", "start.sh"]
