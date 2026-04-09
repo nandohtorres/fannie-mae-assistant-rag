@@ -52,7 +52,7 @@ backend/
 ```
 
 **Key decisions:**
-- Ingest is a one-shot script, never called by the server at runtime
+- Locally, ingest is a one-shot script you run manually before starting the server. In production (Railway), `start.sh` runs it automatically in the background on first deploy if Chroma is empty
 - The RAG chain and retriever are built once at startup via FastAPI `lifespan` — not per request
 - The backend never executes user-submitted input as code
 - All secrets live in `.env`, never in source code
@@ -102,7 +102,7 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:5173`.
+Open `http://localhost:3000`.
 
 ---
 
