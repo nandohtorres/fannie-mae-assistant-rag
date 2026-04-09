@@ -2,6 +2,7 @@ import { Box, Container, Paper, Typography } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import ChatWindow from "@/components/ChatWindow";
+import FunFactsSidebar from "@/components/FunFactsSidebar";
 
 // Fannie Mae brand colors
 const FM_NAVY = "#003087";
@@ -49,13 +50,16 @@ export default function App() {
           py: 4,
         }}
       >
-        <Container maxWidth="md">
+        <Container maxWidth="lg">
+          <Box sx={{ display: "flex", gap: 3, height: "82vh", alignItems: "stretch" }}>
+            <FunFactsSidebar />
+
           <Paper
             elevation={4}
             sx={{
               borderRadius: 3,
               overflow: "hidden",
-              height: "82vh",
+              flex: 1,
               display: "flex",
               flexDirection: "column",
             }}
@@ -113,6 +117,7 @@ export default function App() {
               <ChatWindow />
             </Box>
           </Paper>
+          </Box>
         </Container>
       </Box>
     </ThemeProvider>
