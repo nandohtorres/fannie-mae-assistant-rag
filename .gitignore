@@ -18,9 +18,6 @@ backend/chroma_db/
 # Query logs — runtime artifact, not source code
 backend/logs/
 
-# PDFs — too large for git, added manually per deployment
-backend/data/pdfs/
-
 # Frontend
 node_modules/
 frontend/dist/
