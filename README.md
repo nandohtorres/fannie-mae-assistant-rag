@@ -1,8 +1,8 @@
 # Fannie Mae Guide Assistant
 
-A production-quality RAG (Retrieval-Augmented Generation) chatbot grounded in the Fannie Mae
-Selling Guide and Servicing Guide. Ask questions in plain English — the assistant answers using
-only the source documents, with citations showing exactly which page each answer came from.
+A RAG (Retrieval-Augmented Generation) chatbot for the Fannie Mae Selling Guide and
+Servicing Guide. Ask a question in plain English; the assistant retrieves guide passages,
+is instructed to answer only from them, and cites the source page for each answer.
 
 Built as a reusable portfolio template. Swapping the PDF corpus, system prompt, and README
 produces a version of this tool for any document-heavy domain.
@@ -13,7 +13,7 @@ produces a version of this tool for any document-heavy domain.
 
 - Answers questions about Fannie Mae loan eligibility, property requirements, and servicing guidelines
 - Every response includes source citations — document name and page number
-- Answers are grounded strictly in the ingested documents — no hallucinated policy
+- The prompt restricts answers to the retrieved passages; check the cited page before relying on an answer
 - Rate limited to 10 requests per minute per IP to protect OpenAI API costs
 
 ---
